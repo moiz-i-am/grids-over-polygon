@@ -1,103 +1,126 @@
-# TSDX User Guide
+# Grids Over Polygon
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+## Table of Contents
 
-> This TSDX setup is meant for developing libraries (not apps!) that can be published to NPM. If you’re looking to build a Node app, you could use `ts-node-dev`, plain `ts-node`, or simple `tsc`.
+- [Features](#features)
+- [Installing](#installing)
+- [Size Scale](#size-scale)
+- [Example](#example)
+- [License](#license)
 
-> If you’re new to TypeScript, checkout [this handy cheatsheet](https://devhints.io/typescript)
+## Features
 
-## Commands
+- Make grid polygons over a polygon having closed line rings
+- Make grid polygons by giving size in square kilometers
 
-TSDX scaffolds your new library inside `/src`.
+## Installing
 
-To run TSDX, use:
+Using npm:
 
 ```bash
-npm start # or yarn start
+$ npm install grids-over-polygon
 ```
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+Using yarn:
 
-To do a one-off build, use `npm run build` or `yarn build`.
-
-To run tests, use `npm test` or `yarn test`.
-
-## Configuration
-
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`.
-
-### Bundle Analysis
-
-[`size-limit`](https://github.com/ai/size-limit) is set up to calculate the real cost of your library with `npm run size` and visualize the bundle with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
+```bash
+$ yarn add grids-over-polygon
 ```
 
-### Rollup
+## Size Scale
 
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
+- 0.010 -> 10 sqmeters
+- 0.020 -> 20 sqmeters
+- 0.030 -> 30 sqmeters
+- 0.040 -> 40 sqmeters
+- 0.050 -> 50 sqmeters
+- ...
+- ...
+- 0.1 -> 100 sqmeters
+- 0.2 -> 200 sqmeters
+- ...
+- ...
 
-### TypeScript
+## Example
 
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
+### smaple input polygon
 
-## Continuous Integration
-
-### GitHub Actions
-
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
+In order to gain grid polygons your polygon must be in a closed line-ring format like:
 
 ```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
-}
+let polygon = {
+  type: 'Polygon',
+  coordinates: [
+    [
+      [68.512042621, 25.3242867300001],
+      [68.5112976780001, 25.3242098640001],
+      [68.510249592, 25.3238493880002],
+      [68.5093489910001, 25.32398536500011],
+      [68.5089150000001, 25.3237670000001],
+      [68.5088307380001, 25.3234603970002],
+      [68.5070500000002, 25.322573],
+      [68.5074308300001, 25.3222267860002],
+      [68.507042148, 25.3216887290001],
+      [68.506972433, 25.321487729],
+      [68.5069487710001, 25.3211973530002],
+      [68.5068385850002, 25.320900226],
+      [68.5062476370001, 25.3200674550001],
+      [68.5061603980001, 25.3198325710001],
+      [68.505565, 25.3172970000001],
+      [68.5036411620001, 25.3101630540002],
+      [68.499214034, 25.3078994810002],
+      [68.4986290000001, 25.3081460000001],
+      [68.4970450000001, 25.3071580000002],
+      [68.49534786, 25.305435619],
+      [68.4949080930002, 25.3045316550001],
+      [68.4920286710001, 25.3039871830001],
+      [68.490853874, 25.304612589],
+      [68.4904316530001, 25.3053757910001],
+      [68.487973048, 25.3047899310001],
+      [68.4874530060002, 25.304597969],
+      [68.486944394, 25.3047813230001],
+      [68.512042621, 25.3242867300001],
+    ],
+  ],
+};
 ```
 
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
+### Usage
 
-## Module Formats
+```js
+const { createGrids } = require('grids-over-polygon');
+```
 
-CJS, ESModules, and UMD module formats are supported.
+```js
+const {createGrids} = require('grids-over-polygon');
 
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
+const yourPolygon = [...];
+const yourSizeInKilometers = 0.1; // for grid size in square kilometers/meters
 
-## Named Exports
+let output = createGrids(yourPolygon, yourSizeInKilometers);
+```
 
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
+### Sample Output Structure
 
-## Including Styles
+```json
+[
+  {
+    "polygon": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [68.45690698868681, 25.180706117700627],
+          [68.4578996405087, 25.1807061143897],
+          [68.4578996405087, 25.181604434885035],
+          [68.45690698868681, 25.181604438195958],
+          [68.45690698868681, 25.180706117700627]
+        ]
+      ]
+    }
+  }
+]
+```
 
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
+## License
 
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
-
-## Publishing to NPM
-
-We recommend using [np](https://github.com/sindresorhus/np).
+[MIT](LICENSE)

@@ -1,4 +1,6 @@
 {
+  "name": "grids-over-polygon",
+  "author": "Muhammad Moiz Tahir",
   "version": "0.1.0",
   "license": "MIT",
   "main": "dist/index.js",
@@ -15,7 +17,6 @@
     "start:dev": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test",
-    "test:dev": "node src/index.ts",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",
@@ -33,8 +34,6 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "create-grids-with-polygon",
-  "author": "Muhammad Moiz Tahir",
   "module": "dist/create-grids-with-polygon.esm.js",
   "size-limit": [
     {
