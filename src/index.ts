@@ -74,7 +74,5 @@ export const createGrids = async (polygon: Polygon, gridSizeInKM: number) => {
     ref2 = getPointFromPoint(ref1, gridSizeInKM, angle90Degrees);
   }
 
-  console.log(JSON.stringify(squareStack));
-
   return squareStack;
 };
