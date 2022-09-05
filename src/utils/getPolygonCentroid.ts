@@ -26,3 +26,33 @@ export const getPolygonCentroid = async (
   f = twicearea * 3;
   return { lat: lat / f, lng: lng / f };
 };
+
+export const isInsidePolygon = async (
+  polygon: {
+    lat: number;
+    lng: number;
+  }[],
+  grid: {
+    lat: number;
+    lng: number;
+  }[]
+) => {
+  let point: {
+    lat: number;
+    lng: number;
+  } = await getPolygonCentroid(grid);
+
+  var i, j;
+  var inside = false;
+  for (i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    if (
+      polygon[i].lng > point.lng != polygon[j].lng > point.lng &&
+      point.lat <
+        ((polygon[j].lat - polygon[i].lat) * (point.lng - polygon[i].lng)) /
+          (polygon[j].lng - polygon[i].lng) +
+          polygon[i].lat
+    )
+      inside = !inside;
+  }
+  return inside;
+};

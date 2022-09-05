@@ -1,5 +1,8 @@
 import { Polygon } from './utils/Entities/polygon.entity';
-import { getPolygonCentroid } from './utils/getPolygonCentroid';
+import {
+  getPolygonCentroid,
+  isInsidePolygon,
+} from './utils/getPolygonCentroid';
 import { getMinMaxCoordinates } from './utils/getMinMaxCoordinates';
 import { getLeftBottomPoint, getPointFromPoint } from './utils/getPoints';
 import { getMaxDistanceFromCenterInKm } from './utils/getMaxDistanceFromCenterInKm';
@@ -57,14 +60,26 @@ export const createGrids = async (polygon: Polygon, gridSizeInKM: number) => {
 
       const grid = [refxArr, refyArr, ref4Arr, ref3Arr, refxArr];
 
-      const polygon_structure = {
-        type: 'Polygon',
-        coordinates: [grid],
-      };
-
-      squareStack.push({
-        polygon: { ...polygon_structure },
+      const gridLatLngs = grid?.map(coordinates => {
+        const latLng = {
+          lat: coordinates[1],
+          lng: coordinates[0],
+        };
+        return latLng;
       });
+
+      let isInside = await isInsidePolygon(ucLatLngs, gridLatLngs);
+
+      if (isInside) {
+        const polygon_structure = {
+          type: 'Polygon',
+          coordinates: [grid],
+        };
+
+        squareStack.push({
+          polygon: { ...polygon_structure },
+        });
+      }
 
       refx = ref3;
       refy = ref4;
